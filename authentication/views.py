@@ -33,6 +33,12 @@ class EmailVerificationView(APIView):
             uid = serializer.validated_data["uid"]
             try:
                 user_id = force_str(urlsafe_base64_decode(uid))
+            except Exception:
+                return Response(
+                    {"message": "Invalid Link"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            try:
                 user = User.objects.get(id=user_id)
                 user.is_verified = True
                 user.save()
@@ -42,7 +48,7 @@ class EmailVerificationView(APIView):
                 )
             except User.DoesNotExist:
                 return Response(
-                    {"error": "Invalid Link"},
+                    {"message": "Invalid Link"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -57,7 +63,6 @@ class LoginView(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             return Response(serializer.data, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -92,7 +97,7 @@ class ResetPasswordView(APIView):
                 )
             except User.DoesNotExist:
                 return Response(
-                    {"error": "Invalid Link"},
+                    {"message": "Invalid Link"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

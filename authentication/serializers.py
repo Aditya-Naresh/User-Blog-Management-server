@@ -45,6 +45,7 @@ class LoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, read_only=True)
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
+    id = serializers.CharField(max_length=255, read_only=True)
 
     class Meta:
         model = User
@@ -52,6 +53,7 @@ class LoginSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "username",
+            "id",
             "access_token",
             "refresh_token",
         ]
@@ -64,27 +66,28 @@ class LoginSerializer(serializers.ModelSerializer):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise serializers.ValidationError(
-                {"email": "User with this email does not exist."}
+                {"message": "User with this email does not exist."}
             )
 
         if not user.is_verified:
             raise serializers.ValidationError(
                 {
-                    "email": "Email is not verified.",
+                    "message": "Email is not verified.",
                 }
             )
 
         if not user.check_password(password):
             raise serializers.ValidationError(
                 {
-                    "password": "Incorrect password.",
+                    "message": "Incorrect password.",
                 }
             )
-
+        print("WORKING")
         user_tokens = user.tokens()
         attrs["access_token"] = user_tokens["access"]
         attrs["refresh_token"] = user_tokens["refresh"]
         attrs["username"] = user.username
+        attrs["id"] = user.id
         return attrs
 
 
