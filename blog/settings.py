@@ -3,6 +3,8 @@ import environ
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+from urllib.parse import urlparse
+
 
 env = environ.Env()
 environ.Env.read_env()
@@ -75,13 +77,24 @@ WSGI_APPLICATION = "blog.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+url = urlparse(env("DB_URL"))
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],  # Remove the leading '/' from the path
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
