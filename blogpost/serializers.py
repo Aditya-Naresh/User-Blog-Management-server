@@ -62,6 +62,14 @@ class BlogPostSerializer(serializers.ModelSerializer):
                     "content": "Content is required",
                 }
             )
+
+        if not attrs.get("category"):
+            raise serializers.ValidationError(
+                {
+                    "category": "Category is required",
+                }
+            )
+
         return attrs
 
     def create(self, validated_data):
