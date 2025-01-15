@@ -27,7 +27,7 @@ class ViewsUpdateView(APIView):
         return Response({"message": "Views updated successfully"})
 
 
-class BlogPostDetailView(generics.CreateAPIView):
+class BlogPostCreatelView(generics.CreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [IsAuthenticated]
@@ -37,4 +37,11 @@ class BlogPostUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [IsOwnerUserOnly]
+    lookup_field = "id"
+
+
+class BlogPostDetailsView(generics.RetrieveAPIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [AllowAny]
     lookup_field = "id"

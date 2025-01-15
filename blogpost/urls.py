@@ -24,7 +24,12 @@ urlpatterns = [
     ),
     path(
         "blog/",
-        views.BlogPostDetailView.as_view(),
+        views.BlogPostCreateView.as_view(),
         name="create-blog",
+    ),
+    path(
+        "fetchBlog/<int:id>/",
+        views.BlogPostDetailsView.as_view(),
+        name="fetchDetails",
     ),
 ]
