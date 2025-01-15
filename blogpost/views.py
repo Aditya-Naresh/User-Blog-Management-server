@@ -27,7 +27,7 @@ class ViewsUpdateView(APIView):
         return Response({"message": "Views updated successfully"})
 
 
-class BlogPostCreatelView(generics.CreateAPIView):
+class BlogPostCreateView(generics.CreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [IsAuthenticated]
